@@ -1,18 +1,10 @@
 package main
 
-import (
-	"fmt"
-	"ssmt-ssu/parser"
+import "ssmt-ssu/parser"
 
-	"github.com/gocolly/colly/v2"
-)
+var startLink = "/scp-series"
 
 func main() {
-	c := colly.NewCollector(
-		colly.AllowedDomains("scpfoundation.net"),
-	)
 
-	linksToObject := parser.GetLinksToObject(c, "https://scpfoundation.net/scp-series")
-	fmt.Printf("linksToObject: %v\n", linksToObject)
-
+	parser.ParsePage(startLink)
 }
