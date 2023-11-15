@@ -17,7 +17,7 @@ type ScpObject struct {
 }
 
 const LinkToSite = "scpfoundation.net"
-const DIR = "data/"
+const DIR = "./data"
 
 var rLinks = regexp.MustCompile("/scp.*")
 var navBar = regexp.MustCompile("«.*|.*»")
@@ -31,7 +31,7 @@ func getLinksToObject(c *colly.Collector, link string) ([]string, error) {
 	c.OnHTML("div[id=\"page-content\"]", func(e *colly.HTMLElement) {
 		e.ForEach("p", func(i int, h *colly.HTMLElement) {
 			links := h.ChildAttrs("a", "href")
-			if i > 0 && rLinks.MatchString(links[1]) {
+			if i > 0 && rLinks.MatchString(links[0]) {
 				linksToObject = append(linksToObject, links...)
 			}
 		})
@@ -57,11 +57,8 @@ func getObject(c *colly.Collector, link string) (ScpObject, error) {
 		e.ForEach("p", func(i int, h *colly.HTMLElement) {
 			switch i {
 			case 0:
-				splitText := strings.Split(h.Text, ":")
-				if len(splitText) > 1 {
-					scp.Name = splitText[1]
-				} else {
-					scp.Name = strings.Split(link, "\\")[0]
+				{
+					scp.Name = link[1:]
 				}
 			case 1:
 				splitText := strings.Split(h.Text, ":")
@@ -132,7 +129,7 @@ func ParsePage(link string) error {
 		return err
 	}
 
-	err = scpToJson(scpList, "scp-0")
+	err = scpToJson(scpList, link)
 	if err != nil {
 		return err
 	}

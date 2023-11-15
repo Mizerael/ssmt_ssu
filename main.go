@@ -1,10 +1,27 @@
 package main
 
-import "ssmt-ssu/parser"
+import (
+	"fmt"
+	"ssmt-ssu/parser"
+	"sync"
+)
 
 var startLink = "/scp-series"
 
 func main() {
+	wg := new(sync.WaitGroup)
+	for i := 0; i < 9; i++ {
+		wg.Add(1)
+		link := startLink
+		if i != 0 {
+			link += fmt.Sprintf("-%d", i)
+		}
+		go func() {
+			defer wg.Done()
+			parser.ParsePage(link)
+		}()
 
-	parser.ParsePage(startLink)
+	}
+	wg.Wait()
+	// parser.ParsePage(startLink)
 }
