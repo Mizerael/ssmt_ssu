@@ -6,9 +6,8 @@ import (
 	"github.com/blevesearch/bleve/v2/mapping"
 )
 
-func CreateIndexmapping() (mapping.IndexMapping, error) {
+func CreateIndexMapping() (mapping.IndexMapping, error) {
 	ruTextFieldmapping := bleve.NewTextFieldMapping()
-	ruTextFieldmapping.Analyzer = ru.SnowballStemmerName
 
 	keywordFieldMapping := bleve.NewTextFieldMapping()
 	keywordFieldMapping.Analyzer = ru.AnalyzerName
