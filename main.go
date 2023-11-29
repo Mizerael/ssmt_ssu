@@ -2,7 +2,9 @@ package main
 
 import (
 	"fmt"
+	formingquery "ssmt-ssu/search/formingQuery"
 	"ssmt-ssu/search/index"
+	searchconfig "ssmt-ssu/search/searchConfig"
 
 	"github.com/blevesearch/bleve/v2"
 )
@@ -10,21 +12,24 @@ import (
 var indexPath = "index/scp.bleve"
 
 func main() {
-	scpIndex, err := index.OpenIndex(indexPath)
+	conf := searchconfig.Execute()
+
+	scpIndex, err := index.OpenIndex(indexPath, conf)
 	if err != nil {
 		fmt.Printf("err: %v\n", err)
 	}
 
-	// searchPhrase := "убийца скрылся во тьме"
-	query := bleve.NewDisjunctionQuery(bleve.NewTermQuery("убийца"),
-		bleve.NewTermQuery("скрылся"), bleve.NewTermQuery("во"), bleve.NewTermQuery("тьме"))
-	query.SetBoost(2.0) // устанавливаем бустинг в 2.0
+	var searchPhrase string
 
-	// создаем запрос поиска с лимитом 10 результатов
+	fmt.Printf("Search: ")
+	fmt.Scanf("%s\n", &searchPhrase)
+
+	query := bleve.NewDisjunctionQuery(formingquery.CreateQuery(searchPhrase)...)
+	query.SetBoost(float64(conf.Bosting))
+
 	searchRequest := bleve.NewSearchRequest(query)
-	searchRequest.Size = 10
+	searchRequest.Size = conf.Count
 
-	// выполняем запрос и получаем результаты
 	searchResult, err := scpIndex.Search(searchRequest)
 	if err != nil {
 		panic(err)

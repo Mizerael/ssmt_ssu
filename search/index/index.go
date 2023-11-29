@@ -5,6 +5,7 @@ import (
 	"log"
 	"os"
 	"ssmt-ssu/search/mapping"
+	searchconfig "ssmt-ssu/search/searchConfig"
 	"time"
 
 	"github.com/blevesearch/bleve/v2"
@@ -77,9 +78,9 @@ func indexScp(i bleve.Index) error {
 	return nil
 }
 
-func OpenIndex(path string) (bleve.Index, error) {
+func OpenIndex(path string, conf *searchconfig.Config) (bleve.Index, error) {
 	scpIndex, err := bleve.Open(indexPath)
-	if err == bleve.ErrorIndexPathDoesNotExist {
+	if conf.IndexRebuild || err == bleve.ErrorIndexPathDoesNotExist {
 		log.Printf("Creating new index\n")
 		indexMapping, err := mapping.CreateIndexMapping()
 		checkErr(err)
