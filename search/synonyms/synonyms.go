@@ -34,11 +34,13 @@ type Response struct {
 	Def  []Def `json:"def"`
 }
 
+var apiPath = "https://dictionary.yandex.net/api/v1/dicservice.json/lookup"
+
 func GetSynonyms(word string) ([]Syn, error) {
 
 	apiKey := ""
 
-	url := fmt.Sprintf("https://dictionary.yandex.net/api/v1/dicservice.json/lookup?key=%s&lang=ru-ru&text=%s", apiKey, word)
+	url := fmt.Sprintf(apiPath+"?key=%s&lang=ru-ru&text=%s", apiKey, word)
 
 	client := &http.Client{}
 	req, err := http.NewRequest("GET", url, nil)
@@ -62,6 +64,6 @@ func GetSynonyms(word string) ([]Syn, error) {
 	if err != nil {
 		return nil, err
 	}
-
-	return response.Def[0].Tr[0].Syn[0:3], nil
+	synonims := response.Def[0].Tr[0].Syn
+	return synonims[0:min(3, len(synonims)-1)], nil
 }
