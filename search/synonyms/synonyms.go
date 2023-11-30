@@ -47,7 +47,7 @@ func GetSynonyms(word string) ([]Syn, error) {
 	if err != nil {
 		return nil, err
 	}
-	req.Header.Set("User-Agent", "Go Synonyms Client")
+	req.Header.Set("User-Agent", "ssmt-ssu Synonyms Client")
 	resp, err := client.Do(req)
 	if err != nil {
 		return nil, err
@@ -61,7 +61,7 @@ func GetSynonyms(word string) ([]Syn, error) {
 	}
 	response := &Response{}
 	err = json.Unmarshal(body, response)
-	if err != nil {
+	if err != nil || len(response.Def) == 0 {
 		return nil, err
 	}
 	synonims := response.Def[0].Tr[0].Syn

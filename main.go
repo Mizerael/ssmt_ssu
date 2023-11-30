@@ -10,7 +10,7 @@ import (
 	"github.com/blevesearch/bleve/v2"
 )
 
-const LinkToSite = "scpfoundation.net"
+const LinkToSite = "https://scpfoundation.net"
 
 var indexPath = "index/scp.bleve"
 
@@ -40,6 +40,6 @@ func main() {
 	}
 	fmt.Printf("searchResult:\n")
 	for i, v := range searchResult.Hits {
-		fmt.Printf("%d. https://"+LinkToSite+"/%v With tf-idf similarity: %f\n", i+1, v.Fields["name"], v.Score)
+		fmt.Printf("%d. "+LinkToSite+"/%v With tf-idf similarity: %f\n", i+1, v.Fields["name"], v.Score)
 	}
 }

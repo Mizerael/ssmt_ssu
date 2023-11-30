@@ -23,7 +23,7 @@ func CreateIndexMapping() (mapping.IndexMapping, error) {
 	scpMapping.AddFieldMappingsAt("contains", ruTextFieldmapping)
 
 	indexMapping := bleve.NewIndexMapping()
-	indexMapping.AddDocumentMapping("scp", scpMapping)
+	indexMapping.AddDocumentMapping("json", scpMapping)
 
 	return indexMapping, nil
 }
