@@ -2,6 +2,7 @@ package main
 
 import (
 	"fmt"
+	"log"
 	formingquery "ssmt-ssu/search/formingQuery"
 	"ssmt-ssu/search/index"
 	searchconfig "ssmt-ssu/search/searchConfig"
@@ -29,11 +30,12 @@ func main() {
 
 	searchRequest := bleve.NewSearchRequest(query)
 	searchRequest.Size = conf.Count
+	searchRequest.Fields = []string{"name", "contains", "class"}
 
 	searchResult, err := scpIndex.Search(searchRequest)
 	if err != nil {
-		panic(err)
+		log.Fatal(err, searchResult)
 	}
 
-	fmt.Printf("searchResult: %v\n", searchResult)
+	// fmt.Printf("searchResult: %v\n", searchResult.Hits[0].Fields["name"])
 }

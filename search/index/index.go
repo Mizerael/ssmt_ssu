@@ -79,8 +79,11 @@ func indexScp(i bleve.Index) error {
 }
 
 func OpenIndex(path string, conf *searchconfig.Config) (bleve.Index, error) {
+	if conf.IndexRebuild {
+		os.RemoveAll(path)
+	}
 	scpIndex, err := bleve.Open(indexPath)
-	if conf.IndexRebuild || err == bleve.ErrorIndexPathDoesNotExist {
+	if err == bleve.ErrorIndexPathDoesNotExist {
 		log.Printf("Creating new index\n")
 		indexMapping, err := mapping.CreateIndexMapping()
 		checkErr(err)
