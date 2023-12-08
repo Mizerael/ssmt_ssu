@@ -8,9 +8,11 @@ import (
 )
 
 type Config struct {
-	Count        int
-	Bosting      float64
-	IndexRebuild bool
+	Count             int
+	Bosting           float64
+	IndexRebuild      bool
+	YandexApiKey      string
+	HuggingfaceApiKey string
 }
 
 var conf Config

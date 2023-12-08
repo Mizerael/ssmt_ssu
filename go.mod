@@ -38,6 +38,7 @@ require (
 	github.com/golang/snappy v0.0.1 // indirect
 	github.com/hermanschaaf/enchant v0.0.0-20140423042126-f5e1f010324c // indirect
 	github.com/inconshreveable/mousetrap v1.1.0 // indirect
+	github.com/joho/godotenv v1.5.1 // indirect
 	github.com/json-iterator/go v0.0.0-20171115153421-f7279a603ede // indirect
 	github.com/kennygrant/sanitize v1.2.4 // indirect
 	github.com/mschoch/smat v0.2.0 // indirect

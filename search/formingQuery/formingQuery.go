@@ -10,8 +10,6 @@ import (
 	"github.com/blevesearch/bleve/v2/search/query"
 )
 
-const spellcheckPath = "https://speller.yandex.net/services/spellservice.json/checkTexts?text="
-
 func CreateQuery(str string, conf *searchconfig.Config) []query.Query {
 	var searchQuery []query.Query
 	tmpString := strings.Split(str, " ")
@@ -24,7 +22,7 @@ func CreateQuery(str string, conf *searchconfig.Config) []query.Query {
 			if word == potCorr {
 				maybeCorrect = true
 			}
-			syn, err := synonyms.GetSynonyms(potCorr)
+			syn, err := synonyms.GetSynonyms(potCorr, conf)
 			if err != nil {
 				fmt.Printf("err: %v\n", err)
 			} else {
@@ -32,7 +30,7 @@ func CreateQuery(str string, conf *searchconfig.Config) []query.Query {
 			}
 		}
 		if !maybeCorrect {
-			syn, err := synonyms.GetSynonyms(word)
+			syn, err := synonyms.GetSynonyms(word, conf)
 			if err != nil {
 				fmt.Printf("err: %v\n", err)
 			}
@@ -40,7 +38,6 @@ func CreateQuery(str string, conf *searchconfig.Config) []query.Query {
 		}
 		wordToQuery := query.NewTermQuery(word)
 		searchQuery = append(searchQuery, wordToQuery)
-		fmt.Printf("synonims: %v\n", synonims)
 		for _, k := range synonims {
 			synonymsToQuery := query.NewTermQuery(k.Text)
 			synonymsToQuery.SetBoost(conf.Bosting)

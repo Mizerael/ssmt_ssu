@@ -11,6 +11,7 @@ import (
 	"strings"
 
 	"github.com/blevesearch/bleve/v2"
+	"github.com/joho/godotenv"
 )
 
 const LinkToSite = "https://scpfoundation.net"
@@ -19,10 +20,17 @@ var indexPath = "index/scp.bleve"
 
 func main() {
 	conf := searchconfig.Execute()
+	err := godotenv.Load()
+	if err != nil {
+		log.Fatalf("err: %v\n", err)
+	}
+	conf.YandexApiKey = os.Getenv("YandexApiKey")
+	conf.HuggingfaceApiKey = os.Getenv("HuggingfaceApiKey")
+
 	reader := bufio.NewReader(os.Stdin)
 	scpIndex, err := index.OpenIndex(indexPath, conf)
 	if err != nil {
-		fmt.Printf("err: %v\n", err)
+		log.Fatalf("err: %v\n", err)
 	}
 
 	var searchPhrase string

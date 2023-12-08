@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"io/ioutil"
 	"net/http"
+	searchconfig "ssmt-ssu/search/searchConfig"
 )
 
 type Head struct {
@@ -36,11 +37,10 @@ type Response struct {
 
 var apiPath = "https://dictionary.yandex.net/api/v1/dicservice.json/lookup"
 
-func GetSynonyms(word string) ([]Syn, error) {
+func GetSynonyms(word string, conf *searchconfig.Config) ([]Syn, error) {
 
-	apiKey := "dict.1.1.20231129T235729Z.26a6a6f839d440db.5d3e42564c04696d5ecfd67fdae71806ef1de520"
-
-	url := fmt.Sprintf(apiPath+"?key=%s&lang=ru-ru&text=%s", apiKey, word)
+	url := fmt.Sprintf(apiPath+"?key=%s&lang=ru-ru&text=%s",
+		conf.YandexApiKey, word)
 
 	client := &http.Client{}
 	req, err := http.NewRequest("GET", url, nil)
