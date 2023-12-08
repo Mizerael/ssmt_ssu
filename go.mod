@@ -7,6 +7,7 @@ require (
 	github.com/gocolly/colly/v2 v2.1.0
 	github.com/joho/godotenv v1.5.1
 	github.com/spf13/cobra v1.7.0
+	github.com/hupe1980/go-huggingface v0.0.12 
 )
 
 require (

@@ -3,7 +3,7 @@ package synonyms
 import (
 	"encoding/json"
 	"fmt"
-	"io/ioutil"
+	"io"
 	"net/http"
 	searchconfig "ssmt-ssu/search/searchConfig"
 )
@@ -47,7 +47,7 @@ func GetSynonyms(word string, conf *searchconfig.Config) ([]Syn, error) {
 	if err != nil {
 		return nil, err
 	}
-	req.Header.Set("User-Agent", "ssmt-ssu Synonyms Client")
+	req.Header.Set("User-Agent", "ssmt-ssu learning project")
 	resp, err := client.Do(req)
 	if err != nil {
 		return nil, err
@@ -55,7 +55,7 @@ func GetSynonyms(word string, conf *searchconfig.Config) ([]Syn, error) {
 
 	defer resp.Body.Close()
 	println(resp.Status)
-	body, err := ioutil.ReadAll(resp.Body)
+	body, err := io.ReadAll(resp.Body)
 	if err != nil {
 		return nil, err
 	}
