@@ -26,25 +26,25 @@ func main() {
 	}
 
 	var searchPhrase string
+	for {
+		fmt.Printf("Search:")
+		searchPhrase, _ = reader.ReadString('\n')
 
-	fmt.Printf("Search:")
-	searchPhrase, _ = reader.ReadString('\n')
+		searchPhrase = strings.TrimRight(searchPhrase, "\n")
 
-	searchPhrase = strings.TrimRight(searchPhrase, "\n")
+		query := bleve.NewDisjunctionQuery(formingquery.CreateQuery(searchPhrase, conf)...)
 
-	query := bleve.NewDisjunctionQuery(formingquery.CreateQuery(searchPhrase)...)
-	query.SetBoost(float64(conf.Bosting))
+		searchRequest := bleve.NewSearchRequest(query)
+		searchRequest.Size = conf.Count
+		searchRequest.Fields = []string{"name", "contains", "class"}
 
-	searchRequest := bleve.NewSearchRequest(query)
-	searchRequest.Size = conf.Count
-	searchRequest.Fields = []string{"name", "contains", "class"}
-
-	searchResult, err := scpIndex.Search(searchRequest)
-	if err != nil {
-		log.Fatal(err, searchResult)
-	}
-	fmt.Printf("searchResult:\n")
-	for i, v := range searchResult.Hits {
-		fmt.Printf("%d. "+LinkToSite+"/%v With tf-idf similarity: %f\n", i+1, v.Fields["name"], v.Score)
+		searchResult, err := scpIndex.Search(searchRequest)
+		if err != nil {
+			log.Fatal(err, searchResult)
+		}
+		fmt.Printf("searchResult:\n")
+		for i, v := range searchResult.Hits {
+			fmt.Printf("%d. "+LinkToSite+"/%v With tf-idf similarity: %f\n", i+1, v.Fields["name"], v.Score)
+		}
 	}
 }

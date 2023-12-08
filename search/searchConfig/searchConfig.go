@@ -28,7 +28,7 @@ var rootCmd = &cobra.Command{
 func init() {
 	rootCmd.Flags().IntVarP(&conf.Count, "count", "c", 10,
 		"search result count")
-	rootCmd.Flags().Float64VarP(&conf.Bosting, "boost", "b", 2.0,
+	rootCmd.Flags().Float64VarP(&conf.Bosting, "boost", "b", 0.5,
 		"boosting power var")
 	rootCmd.Flags().BoolVarP(&conf.IndexRebuild, "index-rebuild", "R", false,
 		"rebuild index if set True")

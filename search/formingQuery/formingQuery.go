@@ -2,6 +2,7 @@ package formingquery
 
 import (
 	"fmt"
+	searchconfig "ssmt-ssu/search/searchConfig"
 	"ssmt-ssu/search/spellshecker"
 	"ssmt-ssu/search/synonyms"
 	"strings"
@@ -11,7 +12,7 @@ import (
 
 const spellcheckPath = "https://speller.yandex.net/services/spellservice.json/checkTexts?text="
 
-func CreateQuery(str string) []query.Query {
+func CreateQuery(str string, conf *searchconfig.Config) []query.Query {
 	var searchQuery []query.Query
 	tmpString := strings.Split(str, " ")
 	for _, word := range tmpString {
@@ -34,11 +35,15 @@ func CreateQuery(str string) []query.Query {
 			syn, err := synonyms.GetSynonyms(word)
 			if err != nil {
 				fmt.Printf("err: %v\n", err)
-				synonims = append(synonims, syn...)
 			}
+			synonims = append(synonims, syn...)
 		}
-		searchQuery = append(searchQuery, query.NewTermQuery(word))
+		wordToQuery := query.NewTermQuery(word)
+		searchQuery = append(searchQuery, wordToQuery)
+		fmt.Printf("synonims: %v\n", synonims)
 		for _, k := range synonims {
+			synonymsToQuery := query.NewTermQuery(k.Text)
+			synonymsToQuery.SetBoost(conf.Bosting)
 			searchQuery = append(searchQuery, query.NewTermQuery(k.Text))
 		}
 	}
