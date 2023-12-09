@@ -13,6 +13,7 @@ type Config struct {
 	IndexRebuild      bool
 	YandexApiKey      string
 	HuggingfaceApiKey string
+	UseSummarize      bool
 }
 
 var conf Config
@@ -34,10 +35,15 @@ func init() {
 		"boosting power var")
 	rootCmd.Flags().BoolVarP(&conf.IndexRebuild, "index-rebuild", "R", false,
 		"rebuild index if set True")
+	rootCmd.Flags().BoolVarP(&conf.UseSummarize, "index-rebuild-summarize", "S", false,
+		"rebuild index with summarization if set True")
 }
 
 func Execute() *Config {
 	err := rootCmd.Execute()
+	if conf.UseSummarize {
+		conf.IndexRebuild = true
+	}
 	if err != nil {
 		fmt.Printf("err: %v\n", err)
 		os.Exit(1)

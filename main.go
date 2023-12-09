@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"log"
 	"os"
+	facewho "ssmt-ssu/search/faceWho"
 	formingquery "ssmt-ssu/search/formingQuery"
 	"ssmt-ssu/search/index"
 	searchconfig "ssmt-ssu/search/searchConfig"
@@ -43,16 +44,17 @@ func main() {
 		query := bleve.NewDisjunctionQuery(formingquery.CreateQuery(searchPhrase, conf)...)
 
 		searchRequest := bleve.NewSearchRequest(query)
-		searchRequest.Size = conf.Count
+		searchRequest.Size = conf.Count * 5
 		searchRequest.Fields = []string{"name", "contains", "class"}
 
 		searchResult, err := scpIndex.Search(searchRequest)
 		if err != nil {
 			log.Fatal(err, searchResult)
 		}
+		result := facewho.Simmilarity(facewho.SimilarirtyApi, searchPhrase, searchResult, conf)
 		fmt.Printf("searchResult:\n")
-		for i, v := range searchResult.Hits {
-			fmt.Printf("%d. "+LinkToSite+"/%v With tf-idf similarity: %f\n", i+1, v.Fields["name"], v.Score)
+		for i, v := range result {
+			fmt.Printf("%d. "+LinkToSite+"/%v With similarity: %f\n", i+1, v.Key, v.Value)
 		}
 	}
 }

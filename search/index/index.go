@@ -4,6 +4,7 @@ import (
 	"encoding/json"
 	"log"
 	"os"
+	facewho "ssmt-ssu/search/faceWho"
 	"ssmt-ssu/search/mapping"
 	searchconfig "ssmt-ssu/search/searchConfig"
 	"time"
@@ -27,7 +28,7 @@ func checkErr(err error) {
 	}
 }
 
-func indexScp(i bleve.Index) error {
+func indexScp(i bleve.Index, conf *searchconfig.Config) error {
 	dirEntries, err := os.ReadDir(jsonDir)
 	checkErr(err)
 
@@ -48,6 +49,20 @@ func indexScp(i bleve.Index) error {
 
 		for _, scp := range jsonDoc {
 			docID := scp.Name
+			if conf.UseSummarize {
+				containsToEn, err := facewho.Translate(facewho.RuToEnApi, scp.Contains, conf)
+				if err != nil {
+					log.Fatal(err)
+				}
+				containsSummarize, err := facewho.Summarize(facewho.SummarizeApi, containsToEn, conf)
+				if err != nil {
+					log.Fatal(err)
+				}
+				scp.Contains, err = facewho.Translate(facewho.EnToRuApi, containsSummarize, conf)
+				if err != nil {
+					log.Fatal(err)
+				}
+			}
 			batch.Index(docID, scp)
 			batchCount++
 			if batchCount >= batchSize {
@@ -92,7 +107,7 @@ func OpenIndex(path string, conf *searchconfig.Config) (bleve.Index, error) {
 		if err != nil {
 			log.Fatal(err)
 		}
-		err = indexScp(scpIndex)
+		err = indexScp(scpIndex, conf)
 		checkErr(err)
 	} else if err != nil {
 
